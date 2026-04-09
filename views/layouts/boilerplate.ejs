@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindsetU</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="/css/rating.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Floating Chatbot Button */
+        #chatbot-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #0d6efd;
+            color: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transition: background-color 0.3s, transform 0.2s;
+            text-decoration: none;
+        }
+
+        #chatbot-btn:hover {
+            background-color: #0056b3;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    
+    <%- include("../includes/navbar.ejs") %>
+
+    <div class="container">
+        <%- include("../includes/flash.ejs") %>
+        <%- body %>
+    </div>
+    
+    <%- include("../includes/footer.ejs") %>
+
+    <% if(currUser) { %>
+    <!-- User Profile Modal -->
+    <div class="modal fade" id="userProfileModal" tabindex="-1" aria-labelledby="userProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userProfileModalLabel">User Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+
+                            <div class="col-lg-5">
+                                <div class="d-flex align-items-center mb-4">
+                                    <img src="https://placehold.co/100x100/EFEFEF/333?text=Photo" alt="User Photo" class="rounded-circle me-3" id="profile-photo">
+                                    <div>
+                                        <h4 id="profile-username"><%= currUser.username %></h4>
+                                        <p class="text-muted mb-0" id="profile-email"><%= currUser.email %></p>
+                                    </div>
+                                </div>
+                                <div id="userInfoDisplay">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item"><strong>Organization:</strong> <span id="profile-org">Your Organization</span></li>
+                                        <li class="list-group-item"><strong>Course/Post:</strong> <span id="profile-course">Your Course/Post</span></li>
+                                        <li class="list-group-item"><strong>Pass-key:</strong> <span id="profile-passkey">********</span></li>
+                                    </ul>
+                                </div>
+                                <form id="userInfoEdit" class="d-none">
+                                    <div class="mb-2">
+                                        <label for="edit-org" class="form-label">Organization</label>
+                                        <input type="text" class="form-control" id="edit-org" value="Your Organization">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="edit-course" class="form-label">Course/Post</label>
+                                        <input type="text" class="form-control" id="edit-course" value="Your Course/Post">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+                                    <button type="button" class="btn btn-secondary btn-sm" id="cancelEditBtn">Cancel</button>
+                                </form>
+                                <div class="mt-4">
+                                    <button class="btn btn-outline-primary" id="editDetailsBtn">Edit Details</button>
+                                    <a href="/logout" class="btn btn-outline-danger">Log Out</a>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-7 border-start">
+                                <h5>Daily Record</h5>
+                                <div class="card p-3 my-3 bg-light">
+                                    <p class="mb-2 fw-bold">How are you feeling today?</p>
+                                    <div id="mood-tracker" class="d-flex justify-content-around">
+                                        <button class="btn fs-4" data-mood="good">😊</button>
+                                        <button class="btn fs-4" data-mood="avg">😐</button>
+                                        <button class="btn fs-4" data-mood="bad">😔</button>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>Mood Graph (Last 7 Days)</h6>
+                                        <canvas id="moodChart"></canvas>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <button class="btn btn-sm" id="prev-month">&lt;</button>
+                                            <h6 id="calendar-month-year" class="mb-0"></h6>
+                                            <button class="btn btn-sm" id="next-month">&gt;</button>
+                                        </div>
+                                        <div class="calendar-grid">
+                                            <div class="calendar-header">S</div><div class="calendar-header">M</div><div class="calendar-header">T</div><div class="calendar-header">W</div><div class="calendar-header">T</div><div class="calendar-header">F</div><div class="calendar-header">S</div>
+                                        </div>
+                                        <div id="calendar-body" class="calendar-grid"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% } %>
+
+    <!-- Floating Chatbot Icon -->
+    <a href="https://chatbot-sih-teal.vercel.app/" target="_blank" id="chatbot-btn" title="Chat with us!">
+        <!-- <i class="fas fa-robot"></i> -->
+        <i class="fa-solid fa-comment" style="font-size: 40px;"></i>
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/script.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const profileModal = document.getElementById('userProfileModal');
+            if (profileModal) {
+                const moodData = {
+                    "2025-09-01": "good", "2025-09-03": "bad", "2025-09-04": "avg",
+                    "2025-09-05": "good", "2025-09-08": "good", "2025-09-09": "avg",
+                    "2025-09-10": "bad",
+                };
+                let currentCalendarDate = new Date();
+                let moodChart;
+                const calendarBody = document.getElementById('calendar-body');
+                const calendarMonthYear = document.getElementById('calendar-month-year');
+                
+                function renderCalendar() {
+                    calendarBody.innerHTML = '';
+                    const year = currentCalendarDate.getFullYear();
+                    const month = currentCalendarDate.getMonth();
+                    calendarMonthYear.textContent = `${currentCalendarDate.toLocaleString('default', { month: 'long' })} ${year}`;
+                    const firstDay = new Date(year, month, 1).getDay();
+                    const daysInMonth = new Date(year, month + 1, 0).getDate();
+                    for (let i = 0; i < firstDay; i++) { calendarBody.innerHTML += `<div></div>`; }
+                    for (let day = 1; day <= daysInMonth; day++) {
+                        const dayEl = document.createElement('div');
+                        dayEl.textContent = day;
+                        dayEl.classList.add('calendar-day');
+                        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                        if (moodData[dateStr]) { dayEl.classList.add(moodData[dateStr]); }
+                        if (day === new Date().getDate() && month === new Date().getMonth() && year === new Date().getFullYear()) {
+                            dayEl.classList.add('today');
+                        }
+                        calendarBody.appendChild(dayEl);
+                    }
+                }
+
+                function renderChart() {
+                    const ctx = document.getElementById('moodChart').getContext('2d');
+                    const labels = [];
+                    const dataPoints = [];
+                    for (let i = 6; i >= 0; i--) {
+                        const d = new Date();
+                        d.setDate(d.getDate() - i);
+                        const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                        labels.push(d.toLocaleDateString('en-US', { weekday: 'short' }));
+                        let value = 0;
+                        if (moodData[dateStr] === 'good') value = 3;
+                        if (moodData[dateStr] === 'avg') value = 2;
+                        if (moodData[dateStr] === 'bad') value = 1;
+                        dataPoints.push(value);
+                    }
+                    if (moodChart) { moodChart.destroy(); }
+                    moodChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Mood Level',
+                                data: dataPoints,
+                                backgroundColor: dataPoints.map(v => v === 3 ? '#d1e7dd' : v === 2 ? '#fff3cd' : v === 1 ? '#f8d7da' : '#e9ecef'),
+                                borderColor: dataPoints.map(v => v === 3 ? '#0f5132' : v === 2 ? '#664d03' : v === 1 ? '#58151c' : '#adb5bd'),
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: { y: { beginAtZero: true, max: 3, ticks: { stepSize: 1 } } },
+                            plugins: { legend: { display: false } }
+                        }
+                    });
+                }
+
+                document.getElementById('prev-month').addEventListener('click', () => {
+                    currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+                    renderCalendar();
+                });
+                document.getElementById('next-month').addEventListener('click', () => {
+                    currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+                    renderCalendar();
+                });
+
+                const displayView = document.getElementById('userInfoDisplay');
+                const editView = document.getElementById('userInfoEdit');
+                document.getElementById('editDetailsBtn').addEventListener('click', () => {
+                    displayView.classList.add('d-none');
+                    editView.classList.remove('d-none');
+                });
+                document.getElementById('cancelEditBtn').addEventListener('click', () => {
+                    displayView.classList.remove('d-none');
+                    editView.classList.add('d-none');
+                });
+
+                profileModal.addEventListener('shown.bs.modal', function () {
+                    renderCalendar();
+                    renderChart();
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

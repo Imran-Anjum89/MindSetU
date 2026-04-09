@@ -1,0 +1,136 @@
+<!-- <footer>
+    <div class="f-info">
+        <div class="f-info-socials">
+            <i class="fa-brands fa-instagram"></i>
+            <i class="fa-brands fa-facebook"></i>
+            <i class="fa-brands fa-linkedin"></i>
+            <i class="fa-brands fa-facebook-messenger"></i>
+        </div>
+        <div class="f-info-brand">&copy; MindsetU Private Limited</div>
+        <div class="f-info-links">
+            <a href="/privacy">Privacy</a>
+            <a href="/terms">Terms</a>
+        </div>
+    </div>
+</footer> -->
+
+<footer>
+    <!-- ===== Resources Section (NEW) ===== -->
+    <div class="footer-resources">
+        <h4 class="footer-heading">Resources</h4>
+        <p class="footer-tagline">
+            Helpful articles, videos, and mental-health tips for you.
+        </p>
+
+        <div class="resources-grid">
+            <!-- Resource Card 1 -->
+            <div class="resource-card">
+                <img src="/images/image.png" alt="Mindfulness" class="resource-img">
+                <h5>Mindfulness Guide</h5>
+                <a href="https://www.webmd.com/depression/what-to-know-about-depression-in-college-students" target="_blank">Read Article</a>
+            </div>
+
+            <!-- Resource Card 2 -->
+            <div class="resource-card">
+                <video class="resource-video" autoplay muted controls poster="/images/video-thumb.jpg">
+                    <source src="/images/motivational-video.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <h5>Relaxation Tips</h5>
+            </div>
+
+            <!-- Resource Card 3 -->
+            <div class="resource-card">
+                <img src="/images/support.png" alt="Support Groups" class="resource-img">
+                <h5>Find Support Groups</h5>
+                <a href="https://example.com/support" target="_blank">Learn More</a>
+            </div>
+        </div>
+    </div>
+    <br><br>
+
+    <div class="f-info">
+
+        <!-- ===== Social Icons (existing) ===== -->
+        <div class="f-info-socials">
+            <a href="https://www.instagram.com/mindsetu.limuq?utm_source=qr&igsh=emdwYXExeWE3aTFl"><i class="fa-brands fa-instagram"></i></a>
+            <i class="fa-brands fa-facebook"></i>
+            <i class="fa-brands fa-linkedin"></i>
+            <i class="fa-brands fa-facebook-messenger"></i>
+        </div>
+
+        <!-- ===== Brand (existing) ===== -->
+        <div class="f-info-brand">&copy; MindsetU Private Limited</div>
+
+        <!-- ===== Legal Links (existing) ===== -->
+        <div class="f-info-links">
+            <a href="/privacy">Privacy</a>
+            <a href="/terms">Terms</a>
+        </div>
+    </div>
+</footer>
+
+<!-- Suggested CSS (add to your stylesheet) -->
+<style>
+footer {
+    border-radius: 5%;
+    background: #d0ffe9;
+    padding: 40px 20px;
+    color: #333;
+}
+.f-info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 20px;
+}
+.f-info-socials i {
+    margin: 0 8px;
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: color .3s;
+}
+.f-info-socials i:hover { color: #198754; }
+
+.footer-resources {
+    margin-top: 30px;
+    text-align: center;
+}
+.footer-heading {
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+.resources-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+.resource-card {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 15px;
+    width: 260px;
+    text-align: center;
+}
+.resource-img, .resource-video {
+    width: 100%;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+.resource-card h5 {
+    font-size: 1rem;
+    margin: 8px 0;
+}
+.resource-card a {
+    color: #198754;
+    text-decoration: none;
+}
+.resource-card a:hover {
+    text-decoration: underline;
+}
+</style>

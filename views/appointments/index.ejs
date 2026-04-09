@@ -1,0 +1,93 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="row">
+    <div class="col-10 mx-auto">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-calendar-alt"></i> My Appointments</h2>
+            <a href="/appointments/new" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Book New Appointment
+            </a>
+        </div>
+
+        <% if(appointments.length === 0) { %>
+        <div class="text-center py-5">
+            <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted">No appointments yet</h4>
+            <p class="text-muted">Book your first counseling session to get started.</p>
+            <a href="/appointments/new" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Book Your First Appointment
+            </a>
+        </div>
+        <% } else { %>
+        
+        <div class="row">
+            <% appointments.forEach(appointment => { %>
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            <i class="fas fa-clock"></i>
+                            <%= new Date(appointment.createdAt).toLocaleDateString() %>
+                        </small>
+                        <span class="badge bg-<%= 
+                            appointment.status === 'confirmed' ? 'success' : 
+                            appointment.status === 'pending' ? 'warning' : 
+                            appointment.status === 'completed' ? 'info' : 'danger' 
+                        %>">
+                            <%= appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1) %>
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <%= appointment.sessionType.charAt(0).toUpperCase() + appointment.sessionType.slice(1) %> Session
+                        </h5>
+                        <div class="mb-2">
+                            <strong><i class="fas fa-user"></i> Name:</strong> <%= appointment.fullName %>
+                        </div>
+                        <div class="mb-2">
+                            <strong><i class="fas fa-calendar"></i> Date:</strong> 
+                            <%= new Date(appointment.preferredDate).toLocaleDateString() %>
+                        </div>
+                        <div class="mb-2">
+                            <strong><i class="fas fa-clock"></i> Time:</strong> 
+                            <%= appointment.preferredTime %>
+                        </div>
+                        <div class="mb-2">
+                            <strong><i class="fas fa-envelope"></i> Email:</strong> 
+                            <%= appointment.email %>
+                        </div>
+                        <% if(appointment.additionalNotes) { %>
+                        <div class="mb-2">
+                            <small class="text-muted">
+                                <strong>Notes:</strong> 
+                                <%= appointment.additionalNotes.length > 50 ? 
+                                    appointment.additionalNotes.substring(0, 50) + '...' : 
+                                    appointment.additionalNotes %>
+                            </small>
+                        </div>
+                        <% } %>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <div class="d-flex gap-2">
+                            <a href="/appointments/<%= appointment._id %>" class="btn btn-outline-primary btn-sm flex-fill">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                            <% if(appointment.status !== 'completed') { %>
+                            <a href="/appointments/<%= appointment._id %>/edit" class="btn btn-outline-secondary btn-sm flex-fill">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <% } %>
+                            <form method="POST" action="/appointments/<%= appointment._id %>?_method=DELETE" class="d-inline">
+                                <button class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to cancel this appointment?')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% }); %>
+        </div>
+        <% } %>
+    </div>
+</div>

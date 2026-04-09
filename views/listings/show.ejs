@@ -1,0 +1,673 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+    .book-appointment-btn {
+        background: linear-gradient(135deg, #0891b2, #06b6d4);
+        border: none;
+        color: white;
+        padding: 0.8rem 2rem;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(8, 145, 178, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin: 1rem 0;
+    }
+    
+    .book-appointment-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(8, 145, 178, 0.4);
+        color: white;
+    }
+    
+    .booking-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .booking-modal.show {
+        display: flex;
+        opacity: 1;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+    }
+    
+    .booking-content {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        max-width: 800px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        transform: translateY(20px);
+        transition: transform 0.3s ease;
+    }
+    
+    .booking-modal.show .booking-content {
+        transform: translateY(0);
+    }
+    
+    .modal-header {
+        background: linear-gradient(135deg, #0891b2, #06b6d4);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 12px 12px 0 0;
+        position: relative;
+    }
+    
+    .modal-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0;
+    }
+    
+    .close-btn {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        opacity: 0.8;
+        transition: opacity 0.3s ease;
+    }
+    
+    .close-btn:hover {
+        opacity: 1;
+    }
+    
+    .form-section {
+        padding: 2rem;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-control, .form-select {
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 0.75rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #0891b2;
+        box-shadow: 0 0 0 0.2rem rgba(8, 145, 178, 0.25);
+    }
+    
+    .session-type-dropdown {
+        position: relative;
+    }
+    
+    .session-options {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 2px solid #e5e7eb;
+        border-top: none;
+        border-radius: 0 0 8px 8px;
+        max-height: 300px;
+        overflow-y: auto;
+        z-index: 1000;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .session-options.show {
+        display: block;
+    }
+    
+    .session-option {
+        padding: 0.75rem 1rem;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        border-bottom: 1px solid #f3f4f6;
+    }
+    
+    .session-option:hover {
+        background-color: #f8fafc;
+    }
+    
+    .booking-info {
+        background: #f8fafc;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+        border-left: 4px solid #0891b2;
+    }
+    
+    .booking-info h6 {
+        color: #0891b2;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    
+    .booking-info ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .booking-info li {
+        padding: 0.25rem 0;
+        color: #6b7280;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+/* Peer-to-Peer Support Floating Button */
+.peer-support-btn {
+    position: fixed;
+    bottom: 20px;          /* distance from bottom */
+    left: 20px;            /* ✅ move to left side */
+    background: #0891b2;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 50px;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+    z-index: 10000;
+}
+
+.peer-support-btn:hover {
+    background: #06b6d4;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+    text-decoration: none;
+    color: white;
+}
+
+    .booking-info li::before {
+        content: "•";
+        color: #0891b2;
+        font-weight: bold;
+    }
+    
+    .btn-group {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        padding: 1.5rem 2rem;
+        background: #f8fafc;
+        border-top: 1px solid #e5e7eb;
+    }
+    
+    .btn-cancel {
+        background: #6b7280;
+        border: none;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-cancel:hover {
+        background: #4b5563;
+        color: white;
+    }
+    
+    .btn-submit {
+        background: linear-gradient(135deg, #0891b2, #06b6d4);
+        border: none;
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(8, 145, 178, 0.4);
+        color: white;
+    }
+    
+    .row-custom {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+    
+    .required {
+        color: #dc2626;
+    }
+    
+    .time-slots {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+    
+    .time-slot {
+        padding: 0.5rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 6px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: white;
+    }
+    
+    .time-slot:hover {
+        border-color: #0891b2;
+        background: #f0f9ff;
+    }
+    
+    .time-slot.selected {
+        border-color: #0891b2;
+        background: #0891b2;
+        color: white;
+    }
+    
+    @media (max-width: 768px) {
+        .row-custom {
+            grid-template-columns: 1fr;
+        }
+        
+        .booking-modal {
+            padding: 1rem;
+        }
+        
+        .form-section {
+            padding: 1.5rem;
+        }
+    }
+</style>
+
+<div class="row">
+    <div class="col-8 offset-3">
+        <h3><%= listing.title %></h3>
+    </div>
+    
+    <div class="card col-6 offset-3 listing-card">
+        <img src="<%= listing.image.url %>" class="card-img-top show-img" alt="listing_image">
+        <div class="card-body">
+            <p class="card-text">Owned by- <i><%= listing.owner.username %></i></p>
+            <p class="card-text"><%= listing.description %></p>
+            <p class="card-text">&#8377; <%= listing.price.toLocaleString("en-IN") %></p>
+            <p class="card-text"><%= listing.location %>, <%= listing.country %></p>
+            
+            <!-- Book Appointment Button -->
+            <div class="text-center mt-3">
+                <button class="btn book-appointment-btn" onclick="showBookingForm()">
+                    <i class="fas fa-calendar-plus"></i>
+                    Book Appointment
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <% if(currUser && listing.owner._id.equals(currUser._id)) { %>
+    <div class="btns">
+        <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark col-1 offset-3 edit-btn">Edit</a>
+
+        <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
+            <button class="btn btn-dark offset-3">Delete</button>
+        </form>
+    </div>
+    <% } %>
+
+    <div class="col-8 offset-3 mb-3">
+        <hr>
+        <% if(currUser) { %>
+        <h4>Leave a Review</h4>
+        <form action="/listings/<%= listing.id %>/reviews" method="POST" novalidate class="needs-validation">
+            <div class="mb-3 mt-3">
+            <label for="rating" class="form-label">Rating</label>
+            <fieldset class="starability-slot">
+              <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
+              <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+              <label for="first-rate1" title="Terrible">1 star</label>
+              <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+              <label for="first-rate2" title="Not good">2 stars</label>
+              <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+              <label for="first-rate3" title="Average">3 stars</label>
+              <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+              <label for="first-rate4" title="Very good">4 stars</label>
+              <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+              <label for="first-rate5" title="Amazing">5 stars</label>
+            </fieldset>
+            </div>
+
+            <div class="mb-3 mt-3">
+                <label for="comment" class="form-label">Comment</label>
+                <textarea 
+                    name="review[comment]" 
+                    id="comment"
+                    cols="30"
+                    rows="3"
+                    class="form-control"
+                    required
+                ></textarea>
+                <div class="invalid-feedback">Please add some comment for review</div>
+            </div>
+            <button class="btn btn-outline-dark">Submit</button>
+        </form>
+        <% } %>
+
+        <% if(listing.reviews.length > 0) { %>
+        <div class="row">
+            <p><b>All Reviews</b></p>
+        <% for(review of listing.reviews) { %>
+            <div class="card col-5 ms-3 mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">@<%= review.author.username %></h5>
+                    <p class="starability-result card-text" data-rating="<%= review.rating %>"></p>
+                    <p class="card-text"><%= review.comment %></p>
+                    
+                    <form 
+                        class="mb-3" 
+                        method="POST" 
+                        action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE"
+                    >
+                    <% if(currUser && review.author._id.equals(currUser._id)) { %>
+                        <button class="btn btn-sm btn-dark">Delete</button>
+                    <% } %>
+                        
+                    </form>
+                    
+                </div>
+            </div>
+        <% } %>
+        </div>
+        <% } %>
+    </div>
+</div>
+
+<!-- Booking Modal -->
+<div class="booking-modal" id="bookingModal">
+    <div class="booking-content">
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <h4 class="modal-title">
+                <i class="fas fa-calendar-check"></i>
+                Book Appointment for <%= listing.title %>
+            </h4>
+            <button class="close-btn" onclick="hideBookingForm()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <!-- Form Section -->
+        <div class="form-section">
+            <p class="text-muted mb-4">Fill out the form below to schedule your appointment. We'll confirm your booking within 24 hours.</p>
+            
+            <form id="bookingForm" method="POST" action="/listings/<%= listing._id %>/book-appointment" novalidate class="needs-validation">
+                <div class="row-custom">
+                    <div class="mb-3">
+                        <label for="fullName" class="form-label">Full Name <span class="required">*</span></label>
+                        <input type="text" class="form-control" id="fullName" name="fullName" placeholder="Enter your full name" required>
+                        <div class="invalid-feedback">Please enter your full name.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address <span class="required">*</span></label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="your.email@example.com" required>
+                        <div class="invalid-feedback">Please enter a valid email address.</div>
+                    </div>
+                </div>
+                
+                <div class="row-custom">
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Phone Number <span class="required">*</span></label>
+                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="(555) 123-4567" required>
+                        <div class="invalid-feedback">Please enter your phone number.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="preferredDate" class="form-label">Preferred Date <span class="required">*</span></label>
+                        <input type="date" class="form-control" id="preferredDate" name="preferredDate" required>
+                        <div class="invalid-feedback">Please select a preferred date.</div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="preferredTime" class="form-label">Preferred Time</label>
+                    <div class="time-slots">
+                        <div class="time-slot" data-time="09:00">9:00 AM</div>
+                        <div class="time-slot" data-time="10:00">10:00 AM</div>
+                        <div class="time-slot" data-time="11:00">11:00 AM</div>
+                        <div class="time-slot" data-time="14:00">2:00 PM</div>
+                        <div class="time-slot" data-time="15:00">3:00 PM</div>
+                        <div class="time-slot" data-time="16:00">4:00 PM</div>
+                    </div>
+                    <input type="hidden" id="selectedTime" name="preferredTime">
+                </div>
+                
+                <div class="mb-3">
+                    <label for="sessionType" class="form-label">Appointment Type</label>
+                    <div class="session-type-dropdown">
+                        <div class="form-control" id="sessionTypeDisplay" style="cursor: pointer;">
+                            Select appointment type
+                            <i class="fas fa-chevron-down float-end mt-1"></i>
+                        </div>
+                        <div class="session-options" id="sessionOptions">
+                            <div class="session-option" data-value="consultation">General Consultation</div>
+                            <div class="session-option" data-value="viewing">Property Viewing</div>
+                            <div class="session-option" data-value="negotiation">Price Negotiation</div>
+                            <div class="session-option" data-value="documentation">Documentation Help</div>
+                            <div class="session-option" data-value="other">Other</div>
+                        </div>
+                        <input type="hidden" id="sessionType" name="sessionType">
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="additionalNotes" class="form-label">Additional Notes</label>
+                    <textarea class="form-control" id="additionalNotes" name="additionalNotes" rows="4" placeholder="Any specific requirements or questions you'd like to discuss..."></textarea>
+                </div>
+                
+                <!-- Booking Information -->
+                <div class="booking-info">
+                    <h6><i class="fas fa-info-circle"></i> Booking Information:</h6>
+                    <ul>
+                        <li>You will receive a confirmation email within 24 hours</li>
+                        <li>The property owner will contact you to confirm the appointment</li>
+                        <li>Cancellations must be made 24 hours in advance</li>
+                        <li>All appointments are subject to owner availability</li>
+                    </ul>
+                </div>
+                
+                <!-- Hidden field for listing ID -->
+                <input type="hidden" name="listingId" value="<%= listing._id %>">
+                <input type="hidden" name="listingTitle" value="<%= listing.title %>">
+            </form>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="btn-group">
+            <button type="button" class="btn btn-cancel" onclick="hideBookingForm()">Cancel</button>
+            <button type="submit" form="bookingForm" class="btn btn-submit">
+                <i class="fas fa-paper-plane"></i> Submit Booking Request
+            </button>
+        </div>
+    </div>
+</div>
+<!--  Peer-to-Peer Support Floating Button -->
+<a href="https://sih-p2p.vercel.app/" target="_blank" class="peer-support-btn">
+    <i class="fa-solid fa-comment"></i>
+    MindSpace Support
+</a>
+
+<script>
+    // Show/Hide Booking Form Functions
+    function showBookingForm() {
+        const modal = document.getElementById('bookingModal');
+        modal.style.display = 'flex';
+        
+        setTimeout(() => {
+            modal.classList.add('show');
+        }, 10);
+        
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    }
+    
+    function hideBookingForm() {
+        const modal = document.getElementById('bookingModal');
+        
+        modal.classList.remove('show');
+        
+        setTimeout(() => {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Restore scrolling
+            
+            // Reset form
+            document.getElementById('bookingForm').reset();
+            document.getElementById('bookingForm').classList.remove('was-validated');
+            
+            // Reset session type dropdown
+            document.getElementById('sessionTypeDisplay').innerHTML = 'Select appointment type <i class="fas fa-chevron-down float-end mt-1"></i>';
+            document.getElementById('sessionType').value = '';
+            
+            // Reset time slots
+            document.querySelectorAll('.time-slot').forEach(slot => {
+                slot.classList.remove('selected');
+            });
+            document.getElementById('selectedTime').value = '';
+        }, 300);
+    }
+
+    // Session Type Dropdown
+    const sessionTypeDisplay = document.getElementById('sessionTypeDisplay');
+    const sessionOptions = document.getElementById('sessionOptions');
+    const sessionTypeInput = document.getElementById('sessionType');
+
+    sessionTypeDisplay.addEventListener('click', function() {
+        sessionOptions.classList.toggle('show');
+        const icon = this.querySelector('.fa-chevron-down');
+        icon.style.transform = sessionOptions.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0deg)';
+    });
+
+    document.querySelectorAll('.session-option').forEach(option => {
+        option.addEventListener('click', function() {
+            const value = this.getAttribute('data-value');
+            const text = this.textContent;
+            
+            sessionTypeDisplay.innerHTML = text + '<i class="fas fa-chevron-down float-end mt-1"></i>';
+            sessionTypeInput.value = value;
+            sessionOptions.classList.remove('show');
+            
+            const icon = sessionTypeDisplay.querySelector('.fa-chevron-down');
+            icon.style.transform = 'rotate(0deg)';
+        });
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!sessionTypeDisplay.contains(event.target) && !sessionOptions.contains(event.target)) {
+            sessionOptions.classList.remove('show');
+            const icon = sessionTypeDisplay.querySelector('.fa-chevron-down');
+            if (icon) icon.style.transform = 'rotate(0deg)';
+        }
+    });
+
+    // Time Slot Selection
+    const timeSlots = document.querySelectorAll('.time-slot');
+    const selectedTimeInput = document.getElementById('selectedTime');
+
+    timeSlots.forEach(slot => {
+        slot.addEventListener('click', function() {
+            // Remove selected class from all slots
+            timeSlots.forEach(s => s.classList.remove('selected'));
+            
+            // Add selected class to clicked slot
+            this.classList.add('selected');
+            
+            // Update hidden input
+            selectedTimeInput.value = this.getAttribute('data-time');
+        });
+    });
+
+    // Set minimum date to today
+    const dateInput = document.getElementById('preferredDate');
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.min = today;
+
+    // Form Validation and Submission
+    const form = document.getElementById('bookingForm');
+    
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        if (!this.checkValidity()) {
+            event.stopPropagation();
+            this.classList.add('was-validated');
+            return;
+        }
+        
+        // In a real application, you would submit this to your server
+        // For now, show success message
+        showSuccessMessage();
+    });
+
+    function showSuccessMessage() {
+        const bookingContent = document.querySelector('.booking-content');
+        bookingContent.innerHTML = `
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <i class="fas fa-check-circle"></i>
+                    Booking Request Submitted
+                </h4>
+                <button class="close-btn" onclick="hideBookingForm()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="form-section text-center">
+                <div class="mb-4">
+                    <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                </div>
+                <h5 class="mb-3">Thank You!</h5>
+                <p class="text-muted mb-4">
+                    Your appointment booking request has been submitted successfully. 
+                    The property owner will contact you within 24 hours to confirm the details.
+                </p>
+                <div class="booking-info">
+                    <h6><i class="fas fa-clock"></i> What's Next?</h6>
+                    <ul style="text-align: left;">
+                        <li>Check your email for confirmation</li>
+                        <li>The property owner will contact you to confirm</li>
+                        <li>Prepare any questions you'd like to ask</li>
+                        <li>Arrive at the scheduled time and location</li>
+                    </ul>
+                </div>
+                <button class="btn btn-submit mt-3" onclick="hideBookingForm()">
+                    <i class="fas fa-check"></i> Close
+                </button>
+            </div>
+        `;
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('bookingModal').addEventListener('click', function(event) {
+        if (event.target === this) {
+            hideBookingForm();
+        }
+    });
+</script>

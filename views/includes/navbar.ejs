@@ -1,0 +1,96 @@
+<style>
+    .search-btn {
+        background-color: rgb(223, 74, 0);
+        color: whitesmoke;
+        border-radius: 25px;
+        padding: 0 1rem 0 1rem;
+    }
+    .search-btn:hover {
+        background-color: rgb(255, 0, 0);
+        color: whitesmoke;
+    }
+    .search-btn i {
+        display: inline;
+        margin-right: 0.5rem;
+    }
+    .search-inp {
+        border-radius: 25px;
+        padding: 0.5rem 3rem 0.5rem 3rem;
+        font-size: 1rem;
+    }
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 5px;
+        text-align: center;
+    }
+    .calendar-header {
+        font-weight: bold;
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+    .calendar-day {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-size: 0.9rem;
+        cursor: pointer;
+        border: 2px solid transparent;
+    }
+    .calendar-day.today { border-color: #0d6efd; }
+    .calendar-day.bad { background-color: #f8d7da; color: #58151c; }
+    .calendar-day.avg { background-color: #fff3cd; color: #664d03; }
+    .calendar-day.good { background-color: #d1e7dd; color: #0f5132; }
+</style>
+
+<nav class="navbar navbar-expand-sm bg-body-tertiary border-bottom sticky-top">
+    <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center" href="/listings">
+            <!-- Replace compass icon with your MindsetU logo -->
+            <img src="/images/logo.jpeg" alt="MindsetU Logo" width="60" height="60" class="me-2">
+            <span style="font-weight: bold; font-family: 'Poppins', sans-serif; font-size: 1.3rem; color: #2b6cb0;">
+                MindsetU
+            </span>
+        </a>
+        <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
+            <span class="navbar-toggler-icon"></span>
+        </button> -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
+    <span class="navbar-toggler-icon"></span>
+</button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <!-- <div class="navbar-nav">
+                <a class="nav-link" href="/listings" style="font-weight: bold; font-family: 'Poppins', sans-serif; font-size: 1.3rem; color: #2b6cb0;">MindsetU</a>
+            </div> -->
+            <!-- <div class="navbar-nav ms-auto">
+                <form class="d-flex" role="search">
+                    <input class="form-control me-2 search-inp" type="search" placeholder="Search destinations" aria-label="Search"/>
+                    <button class="btn search-btn" type="submit"><i class="fa-solid fa-magnifying-glass"></i>Search</button>
+                </form>
+            </div> -->
+            <div class="navbar-nav ms-auto">
+                <!-- Send a GET request to the /listings page -->
+               <form class="d-flex" action="/listings" method="GET" role="search">
+                    <!-- Add name="q" to the input so the server can find the search term -->
+                    <input class="form-control me-2 search-inp" type="search" name="q" placeholder="Search Organizations" aria-label="Search"/>
+                    <button class="btn search-btn" type="submit"><i class="fa-solid fa-magnifying-glass"></i>Search</button>
+                </form>
+            </div>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/listings/new"><b>Add your Organization</b></a>
+                <% if(!currUser)  { %>
+                    <a class="nav-link" href="/signup">Sign up</a>
+                    <a class="nav-link" href="/login">Log in</a>
+                <% } %> 
+                <% if(currUser) { %>
+                    <button type="button" class="nav-link" data-bs-toggle="modal" data-bs-target="#userProfileModal">
+                        <i class="fa-solid fa-user"></i>
+                    </button>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,213 @@
+body {
+  font-family: "Plus Jakarta Sans", sans-serif !important;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.container {
+  flex: 1;
+}
+
+/* Navbar */
+.navbar {
+  height: 5rem;
+}
+
+.fa-compass {
+  color: red;
+  font-size: 2rem;
+}
+
+.nav-link {
+  color: rgb(36, 27, 27) !important;
+}
+
+/* Footer */
+.f-info-links a {
+  text-decoration: none;
+  color: rgb(62, 48, 48);
+}
+
+.f-info-links a:hover {
+  text-decoration: underline;
+}
+
+.f-info {
+  height: 8rem;
+  background-color: azure;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.f-info-socials,
+.f-info-brand {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.f-info-socials i {
+  font-size: 1.2rem;
+  margin-right: 1rem;
+}
+
+/* Cards */
+.listing-card {
+  border: none !important;
+  margin-bottom: 2rem;
+}
+
+.card-img-top {
+  border-radius: 1rem !important;
+  width: 100% !important;
+  object-fit: cover !important;
+}
+
+.card-body {
+  padding: 0 !important;
+}
+
+.card-text p {
+  font-weight: 400 !important;
+}
+
+.listing-link {
+  text-decoration: none;
+}
+
+/* Card Effect */
+.card-img-overlay {
+  opacity: 0;
+}
+
+.card-img-overlay:hover {
+  opacity: 0.2;
+  background-color: aliceblue;
+}
+
+/* Buttons */
+.add-btn,
+.edit-btn {
+  background-color: brown !important;
+  border: none !important;
+}
+
+/* Show Page */
+.show-img {
+  height: 30vh;
+}
+
+.btns {
+  display: flex;
+}
+
+.show-card {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Extra Styles from Navbar EJS */
+.search-btn {
+  background-color: rgb(223, 74, 0);
+  color: whitesmoke;
+  border-radius: 25px;
+  padding: 0 1rem 0 1rem;
+  border: none;
+}
+
+.search-btn:hover {
+  background-color: rgb(255, 0, 0);
+  color: whitesmoke;
+}
+
+.search-btn i {
+  display: inline;
+  margin-right: 0.5rem;
+}
+
+.search-inp {
+  border-radius: 25px;
+  padding: 0.5rem 3rem 0.5rem 3rem;
+  font-size: 1rem;
+}
+
+/* Footer Styles */
+footer {
+  border-radius: 5%;
+  background: #d0ffe9;
+  padding: 40px 20px;
+  color: #333;
+  margin-top: auto;
+  /* Ensures footer stays at bottom */
+}
+
+.f-info {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 20px;
+}
+
+.f-info-socials i {
+  margin: 0 8px;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: color .3s;
+}
+
+.f-info-socials i:hover {
+  color: #198754;
+}
+
+.footer-resources {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.footer-heading {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.resources-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.resource-card {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  width: 260px;
+  text-align: center;
+}
+
+.resource-img,
+.resource-video {
+  width: 100%;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.resource-card h5 {
+  font-size: 1rem;
+  margin: 8px 0;
+}
+
+.resource-card a {
+  color: #198754;
+  text-decoration: none;
+}
+
+.resource-card a:hover {
+  text-decoration: underline;
+}

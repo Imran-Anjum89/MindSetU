@@ -1,0 +1,260 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="row">
+    <div class="col-8 mx-auto">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">
+                        <i class="fas fa-calendar-check"></i> Appointment Details
+                    </h4>
+                    <span class="badge bg-<%= 
+                        appointment.status === 'confirmed' ? 'success' : 
+                        appointment.status === 'pending' ? 'warning' : 
+                        appointment.status === 'completed' ? 'info' : 'danger' 
+                    %> fs-6">
+                        <%= appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1) %>
+                    </span>
+                </div>
+            </div>
+            
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="text-primary mb-3">Personal Information</h5>
+                        <div class="mb-3">
+                            <label class="fw-bold text-muted">Full Name:</label>
+                            <p class="mb-1"><%= appointment.fullName %></p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="fw-bold text-muted">Enrollment Number:</label>
+                            <p class="mb-1"><%= appointment.enrollmentNumber %></p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="fw-bold text-muted">Email Address:</label>
+                            <p class="mb-1"><%= appointment.email %></p>
+                        </div>
+                        
+                        <% if(appointment.phone) { %>
+                        <div class="mb-3">
+                            <label class="fw-bold text-muted">Phone Number:</label>
+                            <p class="mb-1"><%= appointment.phone %></p>
+                        </div>
+                        <% } %>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h5 class="text-primary mb-3">Session Details</h5>
+                        <div class="mb-3">
+                            <label class="fw-bold text-muted">Session Type:</label>
+                            <p class="mb-1">
+                                <span class="badge bg-info">
+                                    <%= appointment.sessionType.charAt(0).toUpperCase() + appointment.sessionType.slice(1) %>
+                                </span>
+                            </p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="fw-bold text-muted">Preferred Date:</label>
+                            <p class="mb-1">
+                                <i class="fas fa-calendar text-primary"></i>
+                                <%= new Date(appointment.preferredDate).toLocaleDateString('en-US', { 
+                                    weekday: 'long', 
+                                    year: 'numeric', 
+                                    month: 'long', 
+                                    day: 'numeric' 
+                                }) %>
+                            </p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="fw-bold text-muted">Preferred Time:</label>
+                            <p class="mb-1">
+                                <i class="fas fa-clock text-primary"></i>
+                                <%= appointment.preferredTime %>
+                            </p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="fw-bold text-muted">Booked On:</label>
+                            <p class="mb-1 text-muted">
+                                <%= new Date(appointment.createdAt).toLocaleDateString() %> at 
+                                <%= new Date(appointment.createdAt).toLocaleTimeString() %>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <% if(appointment.additionalNotes) { %>
+                <hr>
+                <div class="mb-3">
+                    <h5 class="text-primary">Additional Notes</h5>
+                    <div class="bg-light p-3 rounded">
+                        <%= appointment.additionalNotes %>
+                    </div>
+                </div>
+                <% } %>
+                
+                <hr>
+                
+                <!-- Booking Information -->
+                <div class="alert alert-info">
+                    <h6 class="alert-heading"><i class="fas fa-info-circle"></i> Important Information:</h6>
+                    <ul class="mb-0">
+                        <li>You will receive a confirmation email within 24 hours</li>
+                        <li>All sessions are confidential and secure</li>
+                        <li>Please arrive 5 minutes before your scheduled time</li>
+                        <li>Contact support if you need to reschedule or cancel</li>
+                    </ul>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between mt-4">
+                    <div>
+                        <a href="/appointments" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Appointments
+                        </a>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <% if(appointment.status === 'pending' || appointment.status === 'confirmed') { %>
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#rescheduleModal">
+                            <i class="fas fa-edit"></i> Reschedule
+                        </button>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelModal">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <% } %>
+                        
+                        <button type="button" class="btn btn-primary" onclick="printAppointment()">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                        
+                        <button type="button" class="btn btn-success" onclick="downloadAppointment()">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reschedule Modal -->
+<div class="modal fade" id="rescheduleModal" tabindex="-1" aria-labelledby="rescheduleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rescheduleModalLabel">
+                    <i class="fas fa-edit text-warning"></i> Reschedule Appointment
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/appointments/<%= appointment._id %>/reschedule" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="newDate" class="form-label">New Preferred Date</label>
+                        <input type="date" class="form-control" id="newDate" name="newDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newTime" class="form-label">New Preferred Time</label>
+                        <select class="form-select" id="newTime" name="newTime" required>
+                            <option value="">Select time slot</option>
+                            <option value="09:00 AM">09:00 AM</option>
+                            <option value="10:00 AM">10:00 AM</option>
+                            <option value="11:00 AM">11:00 AM</option>
+                            <option value="02:00 PM">02:00 PM</option>
+                            <option value="03:00 PM">03:00 PM</option>
+                            <option value="04:00 PM">04:00 PM</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="rescheduleReason" class="form-label">Reason for Rescheduling</label>
+                        <textarea class="form-control" id="rescheduleReason" name="reason" rows="3" placeholder="Optional reason..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fas fa-edit"></i> Reschedule Appointment
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Cancel Modal -->
+<div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cancelModalLabel">
+                    <i class="fas fa-times text-danger"></i> Cancel Appointment
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/appointments/<%= appointment._id %>/cancel" method="POST">
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <strong>Warning!</strong> This action cannot be undone. Are you sure you want to cancel this appointment?
+                    </div>
+                    <div class="mb-3">
+                        <label for="cancelReason" class="form-label">Reason for Cancellation</label>
+                        <textarea class="form-control" id="cancelReason" name="reason" rows="3" placeholder="Please provide a reason for cancellation..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Keep Appointment</button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-times"></i> Cancel Appointment
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function printAppointment() {
+    window.print();
+}
+
+function downloadAppointment() {
+    // Create a simple text version for download
+    const appointmentData = `
+APPOINTMENT DETAILS
+==================
+
+Personal Information:
+- Name: <%= appointment.fullName %>
+- Enrollment: <%= appointment.enrollmentNumber %>
+- Email: <%= appointment.email %>
+<% if(appointment.phone) { %>- Phone: <%= appointment.phone %><% } %>
+
+Session Details:
+- Type: <%= appointment.sessionType %>
+- Date: <%= new Date(appointment.preferredDate).toLocaleDateString() %>
+- Time: <%= appointment.preferredTime %>
+- Status: <%= appointment.status %>
+- Booked On: <%= new Date(appointment.createdAt).toLocaleDateString() %>
+
+<% if(appointment.additionalNotes) { %>Additional Notes:
+<%= appointment.additionalNotes %>
+<% } %>
+`;
+    
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(appointmentData));
+    element.setAttribute('download', 'appointment-<%= appointment._id %>.txt');
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+}
+
+// Set minimum date for rescheduling to today
+document.getElementById('newDate').min = new Date().toISOString().split('T')[0];
+</script>
